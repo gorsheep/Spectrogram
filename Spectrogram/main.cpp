@@ -84,6 +84,9 @@ int threeCharsToInt(unsigned char a, unsigned char b, unsigned char c){
 
 int main() {
     
+    ofstream pureDataObj;
+    pureDataObj.open("pureData.csv"); //файл, куда будут экспортированы преобразованные данные
+    
     vector<BYTE> fileData = readFile("30_06_2019 07_21_59 IRsv_21_01.irs"); //массив с raw data
     vector<float> data; //массив с преобразованными данными
     
@@ -95,7 +98,6 @@ int main() {
     cout << "Число пакетов в файле: " << numOfPacks << endl;
     cout << "Частота дискретизации: " << samplingRate << " мкс" << endl;
     cout << endl;
-    
     
     
     //Цикл, заполняющий массив с преобразованными данными
@@ -112,11 +114,13 @@ int main() {
     cout << "Число измерений: " << data.size() << endl;
     cout << endl;
     
-    /*
+    
+    //Цикл, который пишет в CSV-файл преобразованные данные с таймстэмпами
     for (int i = 0; i < data.size(); i++) {
-        cout << data[i] << endl;
+        pureDataObj << samplingRate*i << "," << data[i] << endl;
     }
-    */
+    
+    
     
     
     return 0;
