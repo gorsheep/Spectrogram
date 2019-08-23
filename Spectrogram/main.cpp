@@ -87,6 +87,9 @@ int main() {
     ofstream pureDataObj;
     pureDataObj.open("pureData.csv"); //файл, куда будут экспортированы преобразованные данные
     
+    ofstream pureDataObj2;
+    pureDataObj2.open("pureDataWolfram.txt");
+    
     vector<BYTE> fileData = readFile("30_06_2019 07_21_59 IRsv_21_01.irs"); //массив с raw data
     vector<float> data; //массив с преобразованными данными
     
@@ -118,6 +121,16 @@ int main() {
     //Цикл, который пишет в CSV-файл преобразованные данные с таймстэмпами
     for (int i = 0; i < data.size(); i++) {
         pureDataObj << samplingRate*i << "," << data[i] << endl;
+    }
+    
+    //Цикл, который пишет в txt-файл преобразованные данные в формате Wolfram Mathematica
+    for (int i = 0; i < data.size(); i++) {
+        if (i != data.size()-1) {
+            pureDataObj2 << data[i] << "\n";
+        }
+        else{
+            pureDataObj2 << data[i];
+        }
     }
     
     
