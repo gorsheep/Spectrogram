@@ -83,106 +83,40 @@ int threeCharsToInt(unsigned char a, unsigned char b, unsigned char c){
 
 
 int main() {
-
     
-    /*
-    unsigned char q = 0xff;
-    unsigned char w = 0xf6;
-    unsigned char e = 0x29;
+    vector<BYTE> fileData = readFile("30_06_2019 07_21_59 IRsv_21_01.irs"); //массив с raw data
+    vector<float> data; //массив с преобразованными данными
     
-    cout << threeCharsToInt(q, w, e) << endl;
-    */
+    int numOfPacks = floor(fileData.size()/1024); //число пакетов в файле (в пакете 1024 байта)
+    int samplingRate = int(fileData[12]); //частота дискретизации - 5 микросекунд
+    float scale = 0.0000257; //цена одного битового отсчета (перевод в Вольты)
+    
+    cout << "Число байт в файле: " << fileData.size() << " байт" << endl;
+    cout << "Число пакетов в файле: " << numOfPacks << endl;
+    cout << "Частота дискретизации: " << samplingRate << " мкс" << endl;
+    cout << endl;
     
     
     
-    
-    /*
-    int i = 0; //итератор
-    
-    ifstream stream;
-    //stream.open("data4.irs", ios_base::binary);
-    stream.open("data4.irs", ifstream::binary);
-    if (!stream.bad()) {
-        cout << hex;
-        cout.width(2);
-        
-        while (!stream.eof()) {
-            i++;
-            unsigned char c;
-            stream >> c;
-            //cout << static_cast<unsigned>(c) << " , i = " << i << endl;
-            cout << static_cast<unsigned>(c) << endl;
+    //Цикл, заполняющий массив с преобразованными данными
+    for (int j = 0; j < numOfPacks; j++) {
+        //Цикл, вычленяющий 100 отсчетов из i-го пакета (в файле 179 пакетов)
+        for (int i = 0; i < 100; i++) {
+            unsigned char a = fileData[1024*j+40+9*i];
+            unsigned char b = fileData[1024*j+41+9*i];
+            unsigned char c = fileData[1024*j+42+9*i];
+            data.push_back(scale*float(threeCharsToInt(a, b, c)));
         }
     }
     
-    cout << dec;
-    cout << "i = " << i << endl;
-    */
-    
-    
-    
-    
+    cout << "Число измерений: " << data.size() << endl;
+    cout << endl;
     
     /*
-    FILE *f;
-    char c;
-    f=fopen("data3.irs","r");
-    cout << hex;
-    cout.width(2);
-    while((c=fgetc(f))!=EOF)
-    {
-        cout << static_cast<unsigned>(c) << endl;
+    for (int i = 0; i < data.size(); i++) {
+        cout << data[i] << endl;
     }
-    fclose(f);
     */
-    
-    
-    
-    
-    
-    /*
-    ifstream is ("data4.irs", ifstream::binary);
-    
-    // get length of file:
-    is.seekg (0, is.end);
-    int length = is.tellg();
-    is.seekg (0, is.beg);
-    
-    unsigned char * buffer = new unsigned char [length];
-    
-    cout << "Reading " << length << " characters... ";
-    // read data as a block:
-    //is.read (buffer,length);
-    is.read (reinterpret_cast<char*>(buffer),length);
-    
-    if (is)
-        cout << "all characters read successfully." << endl;
-    else
-        cout << "error: only " << is.gcount() << " could be read" << endl;
-    is.close();
-    
-    // ...buffer contains the entire file...
-    
-    for (int i=0; i<length; i++) {
-        cout << buffer[i] << endl;
-    }
-    
-    //delete[] buffer;
-    
-    
-    cout << length << endl;
-    cout << hex;
-    cout << buffer[0] << endl;
-    */
-    
-    
-    vector<BYTE> fileData = readFile("data3.irs");
-    cout << hex;
-    cout.width(2);
-    cout << static_cast<unsigned>(fileData[0]) << endl;
-    cout << dec;
-    cout << fileData.size() << endl;
-
     
     
     return 0;
